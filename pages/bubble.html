@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Virtual Bubble Wrap • Interactive Toys</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../styles.css" />
+    <script defer src="../scripts/bubble.js"></script>
+  </head>
+  <body class="min-h-screen bg-gradient-to-b from-slate-900 via-slate-900 to-slate-950 text-white font-[Poppins]">
+    <div class="mx-auto max-w-6xl px-6 py-8">
+      <a href="../index.html" class="text-slate-300 hover:text-white">← Back</a>
+
+      <header class="mt-6 mb-8">
+        <h1 class="text-3xl sm:text-4xl font-bold">Virtual Bubble Wrap</h1>
+        <p class="text-slate-300 mt-2">Pop bubbles with satisfying visuals and synthesized sounds.</p>
+      </header>
+
+      <section class="rounded-2xl bg-slate-800/60 ring-1 ring-white/10 p-6">
+        <div class="flex flex-wrap items-center gap-3 mb-4">
+          <button id="reset-bubbles" class="rounded-full bg-teal-500 px-4 py-2 text-sm font-semibold text-white hover:bg-teal-400 transition">Reset</button>
+          <label class="text-sm text-slate-300 flex items-center gap-2">
+            Size
+            <select id="bubble-size" class="bg-slate-900/60 ring-1 ring-white/10 rounded-lg px-2 py-1 text-sm">
+              <option value="small">Small</option>
+              <option value="medium" selected>Medium</option>
+              <option value="large">Large</option>
+            </select>
+          </label>
+          <label class="text-sm text-slate-300 flex items-center gap-2">
+            Density
+            <select id="bubble-density" class="bg-slate-900/60 ring-1 ring-white/10 rounded-lg px-2 py-1 text-sm">
+              <option value="sparse">Sparse</option>
+              <option value="normal" selected>Normal</option>
+              <option value="dense">Dense</option>
+            </select>
+          </label>
+          <label class="text-sm text-slate-300 flex items-center gap-2">
+            <input id="sound-enabled" type="checkbox" class="accent-teal-500" checked /> Sound
+          </label>
+        </div>
+
+        <div id="bubble-container" class="bubble-grid"></div>
+      </section>
+    </div>
+  </body>
+</html>
