@@ -1,48 +1,23 @@
-# Virtual Bubble Wrap (Static Site)
+# Virtual Bubble Wrap Web App
 
-A delightful single-page mini app you can deploy on Netlify:
+Welcome! This is a simple virtual bubble wrap popping game to help relieve stress and anxiety.
 
-- Virtual Bubble Wrap (`pages/bubble.html`)
+I built this as a fun side project to explore GitHub, AI tools, and Netlify deployment.
 
-No build step is required. Everything is plain HTML/CSS/JS with CDN styling.
+---
 
-## Run locally
+## Live Preview
 
-From a terminal:
+Try it out here: [https://bubble-therapy.netlify.app/](https://bubble-therapy.netlify.app/)
 
-```bash
-cd virtual-bubble-wrap
-python3 -m http.server 5173
-```
+---
 
-Then open `http://localhost:5173`.
+## About
 
-## Deploy to Netlify
+- Pop virtual bubbles to relax and unwind
+- A playful way to practice UI and motion design
+- Automatically deployed using GitHub Actions & Netlify
 
-Option A: Drag-and-drop (quickest)
-- Zip the `interactive-toys` folder or select it directly.
-- Go to Netlify app → Deploys → Drag & Drop (`app.netlify.com/drop`).
-- Drop the folder. Netlify will publish it as a static site.
+---
 
-Option B: Connect repository
-- Create a GitHub repo and push this folder.
-- In Netlify, “Add new site” → “Import an existing project”.
-- Select the repo. Build command: `none` (empty). Publish directory: the root of this folder.
-
-## Customize
-
-- Colors and fonts: tweak `styles.css` or use Tailwind utility classes in the HTML.
-- Bubble grid defaults: adjust sizing/density in `scripts/bubble.js` (`gridConfig`).
-- Sound: toggle in the UI or tweak `playPop` in `scripts/bubble.js`.
-- Counters and refill: see `scripts/bubble.js` for `updateCounters` and the refill logic.
-
-## Files
-
-- `index.html` – landing page
-- `pages/bubble.html` – bubble wrap UI
-- `scripts/bubble.js` – bubble logic (sound generated with WebAudio)
-- `styles.css` – shared styles (pointer, bubble visuals)
-
-## License
-
-All rights reserved. No license granted. Contact the repository owner for permission to use.
+Thanks for visiting! Pop your stress away, one bubble at a time! 🫧
