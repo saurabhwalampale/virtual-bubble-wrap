@@ -45,4 +45,4 @@ Option B: Connect repository
 
 ## License
 
-MIT
+All rights reserved. No license granted. Contact the repository owner for permission to use.
