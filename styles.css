@@ -47,3 +47,91 @@
 @media (max-width: 640px) {
   .bubble-grid { gap: 10px; }
 }
+
+/* Realistic bubble visuals (overrides) */
+.bubble-grid {
+  background: radial-gradient(120% 80% at 50% -20%, rgba(255,255,255,0.07), rgba(255,255,255,0.0) 60%),
+              linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.02));
+  backdrop-filter: saturate(120%) contrast(102%);
+}
+
+.bubble {
+  position: relative;
+  background: radial-gradient(140% 100% at 30% 30%, rgba(255,255,255,0.52), rgba(255,255,255,0.15) 45%, rgba(0,0,0,0.32) 65%),
+              radial-gradient(100% 100% at 70% 70%, rgba(255,255,255,0.10), rgba(0,0,0,0.45));
+  border: 1px solid rgba(255,255,255,0.18);
+  box-shadow:
+    inset 0 2px 4px rgba(255,255,255,0.35),
+    inset 0 -10px 16px rgba(0,0,0,0.25),
+    0 10px 28px rgba(0,0,0,0.4);
+  transition: transform 120ms ease, box-shadow 200ms ease, background 200ms ease, border-color 200ms ease, filter 150ms ease;
+}
+
+.bubble::before,
+.bubble::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+}
+
+/* Specular highlight */
+.bubble::before {
+  background:
+    radial-gradient(60% 50% at 28% 28%, rgba(255,255,255,0.65), rgba(255,255,255,0.15) 45%, transparent 60%),
+    radial-gradient(60% 50% at 72% 72%, rgba(255,255,255,0.08), transparent 60%);
+  filter: blur(0.2px);
+  mix-blend-mode: screen;
+}
+
+/* Inner ring sheen */
+.bubble::after {
+  background:
+    radial-gradient(70% 70% at 50% 52%, rgba(255,255,255,0.12), transparent 60%),
+    radial-gradient(90% 90% at 50% 46%, rgba(255,255,255,0.08), transparent 65%);
+  mix-blend-mode: screen;
+}
+
+.bubble:hover {
+  transform: translateY(-1px) scale(1.03);
+  box-shadow:
+    inset 0 2px 6px rgba(255,255,255,0.38),
+    inset 0 -12px 18px rgba(0,0,0,0.28),
+    0 14px 34px rgba(0,0,0,0.45);
+  filter: brightness(1.02);
+}
+
+/* Pop animation */
+@keyframes bubble-pop {
+  0% { transform: translateY(0) scale(1.00); }
+  28% { transform: translateY(-1px) scale(1.06); }
+  60% { transform: translateY(1px) scale(0.96); }
+  100% { transform: translateY(1px) scale(0.94); }
+}
+
+.bubble.popping { animation: bubble-pop 120ms ease-out; }
+
+.bubble.popped {
+  background: radial-gradient(120% 100% at 30% 30%, rgba(255,255,255,0.10), rgba(0,0,0,0.55) 60%),
+              radial-gradient(100% 100% at 70% 70%, rgba(0,0,0,0.4), rgba(0,0,0,0.55));
+  border-color: rgba(255,255,255,0.12);
+  transform: translateY(1px) scale(0.94);
+  box-shadow:
+    inset 0 10px 28px rgba(0,0,0,0.6),
+    inset 0 -2px 6px rgba(255,255,255,0.08),
+    0 6px 18px rgba(0,0,0,0.28);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bubble { transition: none; }
+  .bubble:hover { transform: none; }
+  .bubble.popping { animation: none; }
+}
+
+@keyframes counter-bump {
+  0% { transform: scale(1); }
+  40% { transform: scale(1.08); }
+  100% { transform: scale(1); }
+}
+.counter-bump { animation: counter-bump 180ms ease-out; }

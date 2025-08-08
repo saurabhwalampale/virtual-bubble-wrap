@@ -3,8 +3,13 @@ const resetButton = document.getElementById("reset-bubbles");
 const sizeSelect = document.getElementById("bubble-size");
 const densitySelect = document.getElementById("bubble-density");
 const soundCheckbox = document.getElementById("sound-enabled");
+const refillButton = document.getElementById("refill-popped");
+const streakDisplay = document.getElementById("streak-display");
+const totalDisplay = document.getElementById("total-display");
 
 let audioCtx = null;
+let totalPoppedCount = 0;
+let currentStreak = 0;
 
 function ensureAudio() {
   if (!audioCtx) {
@@ -12,51 +17,110 @@ function ensureAudio() {
   }
 }
 
-function playPop() {
+function updateCounters(bumpStreak = false) {
+  if (streakDisplay) {
+    streakDisplay.textContent = `Streak: ${currentStreak}`;
+    if (bumpStreak) {
+      streakDisplay.classList.remove('counter-bump');
+      void streakDisplay.offsetWidth;
+      streakDisplay.classList.add('counter-bump');
+    }
+  }
+  if (totalDisplay) {
+    totalDisplay.textContent = `Popped: ${totalPoppedCount}`;
+  }
+}
+
+function playPop(el) {
   if (!soundCheckbox.checked) return;
   ensureAudio();
   const ctx = audioCtx;
 
-  // A short pop sound: filtered noise + decay
-  const duration = 0.08;
+  // Compute stereo pan from bubble position
+  let panNode = null;
+  const supportsPan = typeof ctx.createStereoPanner === "function";
+  if (supportsPan) {
+    panNode = ctx.createStereoPanner();
+    const rect = el.getBoundingClientRect();
+    const containerRect = container.getBoundingClientRect();
+    const centerX = rect.left + rect.width / 2;
+    const relX = (centerX - containerRect.left) / containerRect.width; // 0..1
+    const pan = Math.max(-1, Math.min(1, relX * 2 - 1));
+    panNode.pan.value = pan;
+  }
+
+  // Noise burst
+  const duration = 0.09 + Math.random() * 0.03;
   const sampleRate = ctx.sampleRate;
   const bufferSize = Math.floor(duration * sampleRate);
   const buffer = ctx.createBuffer(1, bufferSize, sampleRate);
   const data = buffer.getChannelData(0);
-
   for (let i = 0; i < bufferSize; i += 1) {
-    // white noise with exponential decay
     const t = i / bufferSize;
     data[i] = (Math.random() * 2 - 1) * Math.pow(1 - t, 5);
   }
-
   const noise = ctx.createBufferSource();
   noise.buffer = buffer;
-
   const filter = ctx.createBiquadFilter();
   filter.type = "bandpass";
-  filter.frequency.value = 1200 + Math.random() * 800;
-  filter.Q.value = 8;
+  filter.frequency.value = 1100 + Math.random() * 900;
+  filter.Q.value = 7 + Math.random() * 3;
 
+  // Click transient (sine blip)
+  const osc = ctx.createOscillator();
+  osc.type = "sine";
+  osc.frequency.value = 320 + Math.random() * 120;
+  const oscGain = ctx.createGain();
+  oscGain.gain.setValueAtTime(0.25, ctx.currentTime);
+  oscGain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + duration);
+
+  const master = ctx.createGain();
+  master.gain.value = 0.9;
+
+  // Chain
+  if (panNode) {
+    noise.connect(filter).connect(panNode);
+    osc.connect(oscGain).connect(panNode);
+    panNode.connect(master).connect(ctx.destination);
+  } else {
+    noise.connect(filter).connect(master);
+    osc.connect(oscGain).connect(master);
+    master.connect(ctx.destination);
+  }
+
+  // Envelopes
   const gain = ctx.createGain();
-  gain.gain.setValueAtTime(0.9, ctx.currentTime);
-  gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + duration);
+  gain.gain.setValueAtTime(1.0, ctx.currentTime);
+  gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + duration);
 
-  noise.connect(filter).connect(gain).connect(ctx.destination);
+  // Start
   noise.start();
+  osc.start();
+  noise.stop(ctx.currentTime + duration);
+  osc.stop(ctx.currentTime + duration);
+}
+
+function hapticPop() {
+  if ("vibrate" in navigator) {
+    try { navigator.vibrate(10); } catch (_) {}
+  }
+}
+
+function markPopped(el) {
+  if (el.dataset.popped === "true") return false;
+  el.dataset.popped = "true";
+  el.classList.add("popping");
+  el.classList.add("popped");
+  el.setAttribute("aria-pressed", "true");
+  // Clean up animation class
+  setTimeout(() => el.classList.remove("popping"), 160);
+  return true;
 }
 
 function bubbleEl() {
   const el = document.createElement("button");
   el.className = "bubble";
   el.setAttribute("aria-pressed", "false");
-  el.addEventListener("pointerdown", () => {
-    if (el.dataset.popped === "true") return;
-    el.dataset.popped = "true";
-    el.classList.add("popped");
-    el.setAttribute("aria-pressed", "true");
-    playPop();
-  });
   return el;
 }
 
@@ -90,9 +154,70 @@ function renderGrid() {
   container.appendChild(frag);
 }
 
-resetButton.addEventListener("click", renderGrid);
+resetButton.addEventListener("click", () => {
+  renderGrid();
+  totalPoppedCount = 0;
+  currentStreak = 0;
+  updateCounters();
+});
 sizeSelect.addEventListener("change", renderGrid);
 densitySelect.addEventListener("change", renderGrid);
+
+refillButton.addEventListener("click", () => {
+  const popped = container.querySelectorAll('.bubble.popped');
+  popped.forEach((el) => {
+    el.classList.remove('popped', 'popping');
+    el.dataset.popped = 'false';
+    el.setAttribute('aria-pressed', 'false');
+  });
+});
+
+// Drag-to-pop interactions via event delegation
+let isPointerDown = false;
+let activePointerId = null;
+
+function tryPopFromEvent(ev) {
+  const target = ev.target;
+  if (!target || !(target instanceof Element)) return;
+  const bubble = target.closest(".bubble");
+  if (!bubble) return;
+  if (markPopped(bubble)) {
+    currentStreak += 1;
+    totalPoppedCount += 1;
+    updateCounters(true);
+    playPop(bubble);
+    hapticPop();
+  }
+}
+
+container.addEventListener("pointerdown", (ev) => {
+  isPointerDown = true;
+  activePointerId = ev.pointerId;
+  container.setPointerCapture?.(activePointerId);
+  currentStreak = 0;
+  updateCounters();
+  tryPopFromEvent(ev);
+});
+
+container.addEventListener("pointermove", (ev) => {
+  if (!isPointerDown) return;
+  tryPopFromEvent(ev);
+});
+
+function endPointer() {
+  isPointerDown = false;
+  if (activePointerId != null) {
+    try { container.releasePointerCapture?.(activePointerId); } catch (_) {}
+  }
+  activePointerId = null;
+  if (currentStreak !== 0) {
+    currentStreak = 0;
+    updateCounters();
+  }
+}
+
+container.addEventListener("pointerup", endPointer);
+container.addEventListener("pointercancel", endPointer);
 
 function init() {
   renderGrid();

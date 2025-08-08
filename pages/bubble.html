@@ -17,12 +17,13 @@
 
       <header class="mt-6 mb-8">
         <h1 class="text-3xl sm:text-4xl font-bold">Virtual Bubble Wrap</h1>
-        <p class="text-slate-300 mt-2">Pop bubbles with satisfying visuals and synthesized sounds.</p>
+        <p class="text-slate-300 mt-2">Pop bubbles with satisfying, realistic visuals and synthesized sounds. Tip: click and drag to pop many at once.</p>
       </header>
 
       <section class="rounded-2xl bg-slate-800/60 ring-1 ring-white/10 p-6">
         <div class="flex flex-wrap items-center gap-3 mb-4">
           <button id="reset-bubbles" class="rounded-full bg-teal-500 px-4 py-2 text-sm font-semibold text-white hover:bg-teal-400 transition">Reset</button>
+          <button id="refill-popped" class="rounded-full bg-indigo-500 px-4 py-2 text-sm font-semibold text-white hover:bg-indigo-400 transition">Refill popped</button>
           <label class="text-sm text-slate-300 flex items-center gap-2">
             Size
             <select id="bubble-size" class="bg-slate-900/60 ring-1 ring-white/10 rounded-lg px-2 py-1 text-sm">
@@ -42,6 +43,11 @@
           <label class="text-sm text-slate-300 flex items-center gap-2">
             <input id="sound-enabled" type="checkbox" class="accent-teal-500" checked /> Sound
           </label>
+
+          <div class="ml-auto flex items-center gap-3 text-sm">
+            <span id="streak-display" class="rounded-lg bg-slate-900/60 ring-1 ring-white/10 px-3 py-1">Streak: 0</span>
+            <span id="total-display" class="rounded-lg bg-slate-900/60 ring-1 ring-white/10 px-3 py-1">Popped: 0</span>
+          </div>
         </div>
 
         <div id="bubble-container" class="bubble-grid"></div>

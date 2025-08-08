@@ -1,8 +1,7 @@
-# Interactive Toys (Static Site)
+# Virtual Bubble Wrap (Static Site)
 
-A tiny collection of delightful web apps you can deploy on Netlify:
+A delightful single-page mini app you can deploy on Netlify:
 
-- Wheel of Fortune (`pages/wheel.html`)
 - Virtual Bubble Wrap (`pages/bubble.html`)
 
 No build step is required. Everything is plain HTML/CSS/JS with CDN styling.
@@ -12,7 +11,7 @@ No build step is required. Everything is plain HTML/CSS/JS with CDN styling.
 From a terminal:
 
 ```bash
-cd interactive-toys
+cd virtual-bubble-wrap
 python3 -m http.server 5173
 ```
 
@@ -32,16 +31,15 @@ Option B: Connect repository
 
 ## Customize
 
-- Wheel labels: open `pages/wheel.html` → edit the text area defaults or just type your own when using the app.
 - Colors and fonts: tweak `styles.css` or use Tailwind utility classes in the HTML.
-- Bubble grid defaults: adjust the sizing and density in `scripts/bubble.js` (`gridConfig`).
+- Bubble grid defaults: adjust sizing/density in `scripts/bubble.js` (`gridConfig`).
+- Sound: toggle in the UI or tweak `playPop` in `scripts/bubble.js`.
+- Counters and refill: see `scripts/bubble.js` for `updateCounters` and the refill logic.
 
 ## Files
 
 - `index.html` – landing page
-- `pages/wheel.html` – wheel page UI
 - `pages/bubble.html` – bubble wrap UI
-- `scripts/wheel.js` – wheel logic
 - `scripts/bubble.js` – bubble logic (sound generated with WebAudio)
 - `styles.css` – shared styles (pointer, bubble visuals)
 
