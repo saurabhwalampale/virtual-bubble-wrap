@@ -12,50 +12,51 @@
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body class="min-h-screen bg-gradient-to-b from-slate-900 via-slate-900 to-slate-950 text-white font-[Poppins]">
-    <header class="relative isolate overflow-hidden pb-24 pt-16">
+    <header class="relative isolate overflow-hidden pb-8 pt-16">
       <div class="absolute inset-0 -z-10 bg-[radial-gradient(80%_50%_at_50%_0%,rgba(59,130,246,0.2),transparent)]"></div>
       <div class="mx-auto max-w-6xl px-6">
         <div class="mx-auto max-w-3xl text-center">
-          <h1 class="text-4xl sm:text-6xl font-bold tracking-tight">
-            Virtual Bubble Wrap
-          </h1>
-          <p class="mt-6 text-lg text-slate-300">
-            Pop endless bubbles with realistic visuals, sound, and drag-to-pop fun.
-          </p>
-          <div class="mt-10 flex items-center justify-center gap-x-6">
-            <a href="#apps" class="rounded-full bg-indigo-500 px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-indigo-500/20 hover:bg-indigo-400 transition">Explore Apps</a>
-            <a href="https://docs.netlify.com/site-deploys/overview/" target="_blank" rel="noreferrer" class="text-sm font-semibold leading-6 text-slate-300 hover:text-white">Deploy on Netlify →</a>
-          </div>
+          <h1 class="text-4xl sm:text-6xl font-bold tracking-tight">Virtual Bubble Wrap</h1>
+          <p class="mt-4 text-slate-300">Click or drag to pop. Use controls to change size, density, and sound.</p>
         </div>
       </div>
     </header>
 
-    <main id="apps" class="mx-auto max-w-6xl px-6 pb-24">
-      <div class="grid gap-8 sm:grid-cols-1">
-        <a href="pages/bubble.html" class="group block rounded-2xl bg-slate-800/60 ring-1 ring-white/10 hover:ring-teal-400/50 transition overflow-hidden">
-          <div class="relative p-6">
-            <div class="absolute -top-10 -left-10 h-40 w-40 rounded-full bg-gradient-to-tr from-teal-500/40 to-emerald-500/40 blur-2xl"></div>
-            <div class="flex items-center gap-4">
-              <div class="h-12 w-12 grid place-items-center rounded-xl bg-teal-500/20 ring-1 ring-teal-400/40">
-                <span class="text-2xl">🫧</span>
-              </div>
-              <div>
-                <h2 class="text-xl font-semibold">Virtual Bubble Wrap</h2>
-                <p class="text-slate-300 text-sm">Pop endless bubbles with satisfying sound and animations.</p>
-              </div>
-            </div>
-            <div class="mt-6 rounded-xl bg-slate-900/60 ring-1 ring-white/5 p-4">
-              <div class="h-36 w-full grid place-items-center text-slate-400 group-hover:text-slate-200 transition">
-                <span class="text-sm">Open the app →</span>
-              </div>
-            </div>
-          </div>
-        </a>
-      </div>
+    <main class="mx-auto max-w-6xl px-6 pb-16">
+      <section class="rounded-2xl bg-slate-800/60 ring-1 ring-white/10 p-6">
+        <div class="flex flex-wrap items-center gap-3 mb-4">
+          <button id="reset-bubbles" class="rounded-full bg-teal-500 px-4 py-2 text-sm font-semibold text-white hover:bg-teal-400 transition">Reset</button>
+          <button id="refill-popped" class="rounded-full bg-indigo-500 px-4 py-2 text-sm font-semibold text-white hover:bg-indigo-400 transition">Refill popped</button>
+          <label class="text-sm text-slate-300 flex items-center gap-2">
+            Size
+            <select id="bubble-size" class="bg-slate-900/60 ring-1 ring-white/10 rounded-lg px-2 py-1 text-sm">
+              <option value="small">Small</option>
+              <option value="medium" selected>Medium</option>
+              <option value="large">Large</option>
+            </select>
+          </label>
+          <label class="text-sm text-slate-300 flex items-center gap-2">
+            Density
+            <select id="bubble-density" class="bg-slate-900/60 ring-1 ring-white/10 rounded-lg px-2 py-1 text-sm">
+              <option value="sparse">Sparse</option>
+              <option value="normal" selected>Normal</option>
+              <option value="dense">Dense</option>
+            </select>
+          </label>
+          <label class="text-sm text-slate-300 flex items-center gap-2">
+            <input id="sound-enabled" type="checkbox" class="accent-teal-500" checked /> Sound
+          </label>
 
-      <p class="mt-12 text-center text-xs text-slate-500">
-        Built as a static site. You can host this folder directly on Netlify.
-      </p>
+          <div class="ml-auto flex items-center gap-3 text-sm">
+            <span id="streak-display" class="rounded-lg bg-slate-900/60 ring-1 ring-white/10 px-3 py-1">Streak: 0</span>
+            <span id="total-display" class="rounded-lg bg-slate-900/60 ring-1 ring-white/10 px-3 py-1">Popped: 0</span>
+          </div>
+        </div>
+
+        <div id="bubble-container" class="bubble-grid"></div>
+      </section>
     </main>
+
+    <script defer src="scripts/bubble.js"></script>
   </body>
 </html>
